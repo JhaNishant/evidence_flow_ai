@@ -4,9 +4,9 @@ EvidenceFlow AI is a multi agent document intelligence assistant built with Lang
 
 ## What it does
 
-- **Q&A** answers a specific question after searching and reading relevant records.
-- **Summarization** extracts the key points, numbers, dates, and document IDs from selected records.
-- **Calculation** retrieves the necessary documents, then sends every arithmetic expression through the calculator tool.
+1. **Q&A** answers a specific question after searching and reading relevant records.
+2. **Summarization** extracts the key points, numbers, dates, and document IDs from selected records.
+3. **Calculation** retrieves the necessary documents, then sends every arithmetic expression through the calculator tool.
 
 The included in memory document collection contains invoices, a service agreement, and an insurance claim so the project runs without an external database.
 
@@ -32,9 +32,9 @@ intent classification
 
 Pydantic models ensure every important LLM response has a known shape:
 
-- `UserIntent` only accepts `qa`, `summarization`, `calculation`, or `unknown`, with confidence from 0 through 1.
-- `AnswerResponse` includes the original question, answer, sources, confidence, and a timestamp.
-- Specialist and memory nodes use their own typed responses for summaries, calculations, and retained document IDs.
+1. `UserIntent` only accepts `qa`, `summarization`, `calculation`, or `unknown`, with confidence from 0 through 1.
+2. `AnswerResponse` includes the original question, answer, sources, confidence, and a timestamp.
+3. Specialist and memory nodes use their own typed responses for summaries, calculations, and retained document IDs.
 
 The calculator parses expressions with Python's abstract syntax tree before using `eval`. It permits numbers, parentheses, and basic arithmetic only. Names, function calls, attributes, imports, and nonfinite results are rejected. It always returns text, so an integer result is `"5"`, not `5`.
 

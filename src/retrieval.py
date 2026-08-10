@@ -7,7 +7,7 @@ from schemas import DocumentChunk
 
 @dataclass
 class Document:
-    """Represents a document in our system"""
+    """Represents a document available to the assistant."""
     doc_id: str
     title: str
     content: str
