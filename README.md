@@ -63,7 +63,16 @@ The `/docs` command shows the available sample documents.
 
 Each call to `start_session` creates or restores a session ID. The assistant stores a JSON safe history of user inputs, responses, intent, sources, tools, actions, and summaries in `sessions/<session_id>.json`.
 
-Every tool invocation is automatically written to `logs/session_<session_id>.json`. These runtime artifacts and `.env` are ignored by Git so no secrets or personal session data are published.
+Every tool invocation is automatically written to `logs/session_<session_id>.json`. Private runtime artifacts and `.env` are ignored by Git so no secrets or personal session data are published.
+
+## Example saved session
+
+One live example is included to show how EvidenceFlow AI records a conversation:
+
+1. [`sessions/evidence_flow_demo.json`](sessions/evidence_flow_demo.json) keeps three conversation turns covering Q&A, summarization, and calculation.
+2. [`logs/session_evidence_flow_demo.json`](logs/session_evidence_flow_demo.json) records the timestamped document and calculator tool calls from that conversation.
+
+New local sessions and logs stay private unless they are deliberately added to the repository.
 
 ## Example conversations
 

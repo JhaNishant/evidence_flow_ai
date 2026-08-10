@@ -1,0 +1,77 @@
+[
+  {
+    "timestamp": "2026-08-10T23:14:38.186722",
+    "tool_name": "document_search",
+    "input": {
+      "query": "INV-001",
+      "search_type": "keyword",
+      "doc_type": null,
+      "min_amount": null,
+      "max_amount": null,
+      "comparison": null,
+      "amount": null
+    },
+    "output": "{'results_count': 0}"
+  },
+  {
+    "timestamp": "2026-08-10T23:14:39.573941",
+    "tool_name": "document_reader",
+    "input": {
+      "doc_id": "INV-001"
+    },
+    "output": "{'found': True, 'doc_type': 'invoice'}"
+  },
+  {
+    "timestamp": "2026-08-10T23:14:47.643021",
+    "tool_name": "document_search",
+    "input": {
+      "query": "service agreement",
+      "search_type": "keyword",
+      "doc_type": null,
+      "min_amount": null,
+      "max_amount": null,
+      "comparison": null,
+      "amount": null
+    },
+    "output": "{'results_count': 3}"
+  },
+  {
+    "timestamp": "2026-08-10T23:14:48.933567",
+    "tool_name": "document_reader",
+    "input": {
+      "doc_id": "CON-001"
+    },
+    "output": "{'found': True, 'doc_type': 'contract'}"
+  },
+  {
+    "timestamp": "2026-08-10T23:15:00.910492",
+    "tool_name": "document_search",
+    "input": {
+      "query": "INV-002",
+      "search_type": "keyword",
+      "doc_type": null,
+      "min_amount": null,
+      "max_amount": null,
+      "comparison": null,
+      "amount": null
+    },
+    "output": "{'results_count': 0}"
+  },
+  {
+    "timestamp": "2026-08-10T23:15:02.346837",
+    "tool_name": "document_reader",
+    "input": {
+      "doc_id": "INV-002"
+    },
+    "output": "{'found': True, 'doc_type': 'invoice'}"
+  },
+  {
+    "timestamp": "2026-08-10T23:15:04.113974",
+    "tool_name": "calculator",
+    "input": {
+      "expression": "70000-7000+6300",
+      "normalized_expression": "70000-7000+6300"
+    },
+    "output": "{'result': '69300'}"
+  }
+]

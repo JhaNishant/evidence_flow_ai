@@ -29,8 +29,10 @@ pyvenv.cfg
 
 # Project specific
 .env
-sessions/
-logs/
+sessions/*
+!sessions/evidence_flow_demo.json
+logs/*
+!logs/session_evidence_flow_demo.json
 *.log
 
 # OS

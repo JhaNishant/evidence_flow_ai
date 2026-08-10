@@ -1,0 +1,86 @@
+{
+  "session_id": "evidence_flow_demo",
+  "user_id": "demo_user",
+  "conversation_history": [
+    {
+      "timestamp": "2026-08-10T23:14:44.401682",
+      "user_input": "Who is the client on invoice INV-001?",
+      "assistant_response": "The client on invoice INV-001 is Acme Corporation.",
+      "intent": {
+        "intent_type": "qa",
+        "confidence": 1.0,
+        "reasoning": "The user asks for a factual detail from an invoice and does not request any calculation."
+      },
+      "sources": [
+        "INV-001"
+      ],
+      "tools_used": [
+        "document_search",
+        "document_reader"
+      ],
+      "actions_taken": [
+        "classify_intent",
+        "qa_agent",
+        "update_memory"
+      ],
+      "summary": "Invoice INV-001 (Invoice #12345), dated 2024-01-15, lists Acme Corporation as the client. Services total $20,000 before 10% tax ($2,000); payment terms are Net 30 days."
+    },
+    {
+      "timestamp": "2026-08-10T23:14:58.191033",
+      "user_input": "Summarize the service agreement.",
+      "assistant_response": "Service Agreement CON-001: EvidenceFlow Systems Inc. will provide Healthcare Partners LLC with platform access, technical support, analytics reporting, and compliance monitoring for 12 months beginning January 1, 2024. The contract is valued at $180,000 ($15,000 monthly), and either party may terminate with 60 days\u2019 written notice.",
+      "intent": {
+        "intent_type": "summarization",
+        "confidence": 0.99,
+        "reasoning": "The user explicitly requests a summary of a service agreement, which is a document summarization task and does not require calculations."
+      },
+      "sources": [
+        "INV-001",
+        "CON-001"
+      ],
+      "tools_used": [
+        "document_search",
+        "document_reader"
+      ],
+      "actions_taken": [
+        "classify_intent",
+        "summarization_agent",
+        "update_memory"
+      ],
+      "summary": "The Service Agreement (CON-001) is between EvidenceFlow Systems Inc. (provider) and Healthcare Partners LLC (client), effective January 1, 2024. It covers document processing platform access, 24/7 technical support, monthly data analytics reports, and compliance monitoring. The term is 12 months, with a monthly fee of $15,000 and total contract value of $180,000. Either party may terminate with 60 days\u2019 written notice."
+    },
+    {
+      "timestamp": "2026-08-10T23:15:09.527268",
+      "user_input": "Calculate the total due on invoice INV-002.",
+      "assistant_response": "The total due is calculated from the subtotal, discount, and tax listed on invoice INV-002.\nResult: 69300.0",
+      "intent": {
+        "intent_type": "calculation",
+        "confidence": 1.0,
+        "reasoning": "The user explicitly asks to calculate the total due on invoice INV-002, which requires a numerical computation based on document data."
+      },
+      "sources": [
+        "INV-001",
+        "CON-001",
+        "INV-002"
+      ],
+      "tools_used": [
+        "document_search",
+        "document_reader",
+        "calculator"
+      ],
+      "actions_taken": [
+        "classify_intent",
+        "calculation_agent",
+        "update_memory"
+      ],
+      "summary": "Invoice INV-002 (Invoice #12346, dated February 20, 2024) is for TechStart Inc. The subtotal is $70,000, less a 10% discount of $7,000, plus 10% tax of $6,300, resulting in a total due of $69,300. Payment terms are Net 45 days."
+    }
+  ],
+  "document_context": [
+    "INV-001",
+    "CON-001",
+    "INV-002"
+  ],
+  "created_at": "2026-08-10T23:14:34.727327",
+  "last_updated": "2026-08-10T23:15:09.527425"
+}

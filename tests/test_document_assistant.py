@@ -1,4 +1,4 @@
-"""Offline verification for EvidenceFlow AI's rubric requirements."""
+"""Offline verification for EvidenceFlow AI."""
 
 from pathlib import Path
 import json
@@ -181,6 +181,25 @@ class SessionTests(unittest.TestCase):
                 )
                 resumed_assistant.start_session("different_user", session_id=session_id)
             self.assertEqual(len(resumed_assistant.current_session.conversation_history), 2)
+
+
+class RuntimeEvidenceTests(unittest.TestCase):
+    def test_sample_session_covers_every_intent(self):
+        project_root = Path(__file__).resolve().parents[1]
+        session_path = project_root / "sessions" / "evidence_flow_demo.json"
+        log_path = project_root / "logs" / "session_evidence_flow_demo.json"
+
+        self.assertTrue(session_path.exists())
+        self.assertTrue(log_path.exists())
+
+        session_data = json.loads(session_path.read_text(encoding="utf-8"))
+        tool_logs = json.loads(log_path.read_text(encoding="utf-8"))
+        intents = [turn["intent"]["intent_type"] for turn in session_data["conversation_history"]]
+        tool_names = [entry["tool_name"] for entry in tool_logs]
+
+        self.assertEqual(intents, ["qa", "summarization", "calculation"])
+        self.assertIn("calculator", tool_names)
+        self.assertTrue(all(entry.get("timestamp") for entry in tool_logs))
 
 
 if __name__ == "__main__":
