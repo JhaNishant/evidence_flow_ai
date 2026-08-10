@@ -1,8 +1,6 @@
 """LangGraph workflow for the EvidenceFlow AI document assistant."""
 
 from typing import Annotated, Any, Dict, List, Optional, TypedDict
-import operator
-import re
 
 from langchain_core.messages import BaseMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate
@@ -14,8 +12,15 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel
 
-from schemas import AnswerResponse, CalculationResponse, SummarizationResponse, UpdateMemoryResponse, UserIntent
-from prompts import MEMORY_SUMMARY_PROMPT, get_chat_prompt_template, get_intent_classification_prompt
+from .schemas import AnswerResponse, CalculationResponse, SummarizationResponse, UpdateMemoryResponse, UserIntent
+from .prompts import MEMORY_SUMMARY_PROMPT, get_chat_prompt_template, get_intent_classification_prompt
+
+
+def reduce_actions(previous: List[str], current: List[str]) -> List[str]:
+    """Append workflow actions or begin a fresh turn when requested."""
+    if current and current[0] == "__reset_actions__":
+        return current[1:]
+    return previous + current
 
 
 class AgentState(TypedDict):
@@ -31,7 +36,7 @@ class AgentState(TypedDict):
     tools_used: List[str]
     session_id: Optional[str]
     user_id: Optional[str]
-    actions_taken: Annotated[List[str], operator.add]
+    actions_taken: Annotated[List[str], reduce_actions]
 
 
 def _configurable(config: RunnableConfig) -> Dict[str, Any]:
@@ -203,5 +208,8 @@ def create_workflow(llm: Any, tools: List[Any]):
     workflow.add_edge("summarization_agent", "update_memory")
     workflow.add_edge("calculation_agent", "update_memory")
     workflow.add_edge("update_memory", END)
-    serializer = JsonPlusSerializer(allowed_msgpack_modules=[("schemas", "UserIntent")])
+    try:
+        serializer = JsonPlusSerializer(allowed_msgpack_modules=[("src.schemas", "UserIntent")])
+    except TypeError:
+        serializer = JsonPlusSerializer()
     return workflow.compile(checkpointer=InMemorySaver(serde=serializer))

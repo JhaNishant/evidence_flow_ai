@@ -2,21 +2,18 @@
 
 from pathlib import Path
 import json
-import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
 from langchain_core.messages import AIMessage
 from pydantic import ValidationError
 
-from agent import create_workflow
-from assistant import DocumentAssistant
-from prompts import CALCULATION_SYSTEM_PROMPT, get_chat_prompt_template, get_intent_classification_prompt
-from schemas import AnswerResponse, CalculationResponse, SummarizationResponse, UpdateMemoryResponse, UserIntent
-from tools import ToolLogger, create_calculator_tool
+from src.agent import create_workflow
+from src.assistant import DocumentAssistant
+from src.prompts import CALCULATION_SYSTEM_PROMPT, get_chat_prompt_template, get_intent_classification_prompt
+from src.schemas import AnswerResponse, CalculationResponse, SummarizationResponse, UpdateMemoryResponse, UserIntent
+from src.tools import ToolLogger, create_calculator_tool
 
 
 class FakeStructuredCall:
@@ -75,18 +72,21 @@ class SchemaTests(unittest.TestCase):
     def test_answer_response_enforces_confidence_range(self):
         response = AnswerResponse(question="Q", answer="A", confidence=0.5)
         self.assertEqual(response.sources, [])
-        with self.assertRaises(ValidationError):
-            AnswerResponse(question="Q", answer="A", confidence=1.1)
+        for invalid_confidence in (-0.1, 1.1):
+            with self.subTest(confidence=invalid_confidence), self.assertRaises(ValidationError):
+                AnswerResponse(question="Q", answer="A", confidence=invalid_confidence)
 
     def test_user_intent_restricts_categories(self):
         self.assertEqual(UserIntent(intent_type="qa", confidence=0.7, reasoning="Question").intent_type, "qa")
         with self.assertRaises(ValidationError):
             UserIntent(intent_type="chat", confidence=0.7, reasoning="Invalid")
+        with self.assertRaises(ValidationError):
+            UserIntent(intent_type="qa", confidence=1.1, reasoning="Invalid confidence")
 
 
 class PromptAndToolTests(unittest.TestCase):
     def test_all_chat_prompt_types_are_available(self):
-        for intent_type in ("qa", "summarization", "calculation"):
+        for intent_type in ("qa", "summarization", "calculation", "unknown"):
             messages = get_chat_prompt_template(intent_type).invoke({"input": "Hello", "chat_history": []}).to_messages()
             self.assertEqual(messages[-1].content, "Hello")
         self.assertIn("calculator tool", CALCULATION_SYSTEM_PROMPT.lower())
@@ -127,7 +127,7 @@ class WorkflowTests(unittest.TestCase):
             "user_id": "tester",
             "actions_taken": [],
         }
-        with patch("agent.invoke_react_agent", side_effect=fake_react_agent):
+        with patch("src.agent.invoke_react_agent", side_effect=fake_react_agent):
             return workflow.invoke(initial_state, config={"configurable": {"thread_id": intent_type, "llm": FakeLLM(intent_type), "tools": tools}})
 
     def test_qa_route_reaches_memory(self):
@@ -155,8 +155,8 @@ class SessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             sessions = Path(directory) / "sessions"
             logs = Path(directory) / "logs"
-            with patch("assistant.ChatOpenAI", return_value=FakeLLM("qa")), patch(
-                "agent.invoke_react_agent", side_effect=fake_react_agent
+            with patch("src.assistant.ChatOpenAI", return_value=FakeLLM("qa")), patch(
+                "src.agent.invoke_react_agent", side_effect=fake_react_agent
             ):
                 document_assistant = DocumentAssistant(
                     "test_key", session_storage_path=str(sessions), logs_dir=str(logs)
@@ -175,7 +175,7 @@ class SessionTests(unittest.TestCase):
                 saved_session["conversation_history"][1]["actions_taken"],
                 ["classify_intent", "qa_agent", "update_memory"],
             )
-            with patch("assistant.ChatOpenAI", return_value=FakeLLM("qa")):
+            with patch("src.assistant.ChatOpenAI", return_value=FakeLLM("qa")):
                 resumed_assistant = DocumentAssistant(
                     "test_key", session_storage_path=str(sessions), logs_dir=str(logs)
                 )

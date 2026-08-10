@@ -8,12 +8,11 @@ import uuid
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from langgraph.types import Overwrite
 
-from agent import AgentState, create_workflow
-from retrieval import SimulatedRetriever
-from schemas import SessionState
-from tools import ToolLogger, get_all_tools
+from .agent import AgentState, create_workflow
+from .retrieval import SimulatedRetriever
+from .schemas import SessionState
+from .tools import ToolLogger, get_all_tools
 
 
 class DocumentAssistant:
@@ -24,14 +23,21 @@ class DocumentAssistant:
         openai_api_key: str,
         model_name: str = "gpt-4o",
         temperature: float = 0.1,
+        reasoning_effort: Optional[str] = None,
         session_storage_path: str = "./sessions",
         logs_dir: str = "./logs",
     ):
+        model_options: Dict[str, Any] = {}
+        selected_reasoning_effort = reasoning_effort or ("none" if model_name.startswith("gpt-5") else None)
+        if selected_reasoning_effort:
+            model_options["reasoning_effort"] = selected_reasoning_effort
+
         self.llm = ChatOpenAI(
             api_key=openai_api_key,
             model=model_name,
             temperature=temperature,
             base_url="https://openai.vocareum.com/v1",
+            **model_options,
         )
         self.retriever = SimulatedRetriever()
         self.session_storage_path = session_storage_path
@@ -142,7 +148,7 @@ class DocumentAssistant:
             "tools_used": [],
             "session_id": self.current_session.session_id,
             "user_id": self.current_session.user_id,
-            "actions_taken": Overwrite([]),
+            "actions_taken": ["__reset_actions__"],
         }
 
         try:

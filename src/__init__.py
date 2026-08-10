@@ -1,1 +1,1 @@
-# This makes src a proper Python package
+"""EvidenceFlow AI application package."""

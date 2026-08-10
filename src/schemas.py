@@ -1,6 +1,5 @@
-from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Literal, TypedDict
+from typing import List, Optional, Dict, Any, Literal
 from datetime import datetime
 
 
@@ -36,7 +35,7 @@ class CalculationResponse(BaseModel):
     """Structured response for calculation tasks"""
     expression: str = Field(description="The mathematical expression")
     result: float = Field(description="The calculated result")
-    explanation: str = Field(description="Step-by-step explanation")
+    explanation: str = Field(description="Clear explanation of the calculation")
     units: Optional[str] = Field(default=None, description="Units if applicable")
     timestamp: datetime = Field(default_factory=datetime.now)
 
@@ -44,7 +43,7 @@ class CalculationResponse(BaseModel):
 class UpdateMemoryResponse(BaseModel):
     """Response after updating memory"""
     summary: str = Field(description="Summary of the conversation up to this point")
-    document_ids: List[str] = Field(default_factory=list, description="List of documents ids that are relevant to the users last message")
+    document_ids: List[str] = Field(default_factory=list, description="Document IDs relevant to the latest user message")
 
 
 class UserIntent(BaseModel):

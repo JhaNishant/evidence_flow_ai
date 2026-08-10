@@ -1,11 +1,7 @@
-"""
-Tool definitions for the agent using @tool decorator
-Think of these as the agent's Swiss Army knife 🔧 - each tool has a specific purpose!
-"""
+"""Logged tools for calculation and document retrieval."""
 
 from typing import Dict, Any, List, Optional, Literal
 from langchain.tools import tool
-from pydantic import BaseModel, Field
 import ast
 import math
 import re
@@ -21,11 +17,9 @@ class ToolLogger:
         self.logs_dir = logs_dir
         self.session_id = session_id
 
-        # Make sure logs directory exists
         import os
         os.makedirs(logs_dir, exist_ok=True)
 
-        # Create session-specific log file if session_id provided
         if session_id:
             self.log_file = os.path.join(logs_dir, f"session_{session_id}.json")
         else:
@@ -41,7 +35,6 @@ class ToolLogger:
         }
         self.logs.append(log_entry)
 
-        # Automatically save to persistent file
         self._auto_save()
         return log_entry
 

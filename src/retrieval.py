@@ -2,7 +2,7 @@ import json
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 import re
-from schemas import DocumentChunk
+from .schemas import DocumentChunk
 
 
 @dataclass
@@ -55,7 +55,7 @@ class SimulatedRetriever:
                 SERVICE AGREEMENT
 
                 This Service Agreement is entered into on January 1, 2024, between:
-                - Provider: DocDacity Solutions Inc.
+                - Provider: EvidenceFlow Systems Inc.
                 - Client: Healthcare Partners LLC
 
                 Services:

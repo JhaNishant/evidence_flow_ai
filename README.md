@@ -55,6 +55,8 @@ Set `OPENAI_API_KEY` in `.env`, then start the assistant:
 python3 main.py
 ```
 
+`MODEL_NAME`, `TEMPERATURE`, `REASONING_EFFORT`, `SESSION_STORAGE_PATH`, and `LOGS_DIR` can also be adjusted in `.env`. Reasoning models that use tools should set `REASONING_EFFORT` to `none`.
+
 The `/docs` command shows the available sample documents.
 
 ## Memory, sessions, and logs

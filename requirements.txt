@@ -1,10 +1,10 @@
-# DocDacity Document Assistant
+# EvidenceFlow AI
 
-langchain>=0.2.0
-langgraph>=0.6.7
-langchain-openai>=0.1.0
-langchain-core>=0.2.0
-pydantic>=2.0.0
-python-dotenv>=1.0.0
-openai>=1.0.0
-print-color>=0.4.6
+langchain==0.3.27
+langgraph==0.6.7
+langchain-openai==0.3.27
+langchain-core==0.3.77
+pydantic>=2.11.7,<3.0.0
+python-dotenv==1.1.1
+openai==1.109.1
+print-color==0.4.6
